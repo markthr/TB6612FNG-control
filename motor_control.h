@@ -26,22 +26,16 @@ TB6612FNG:  This chip integrates an H-bridge with PWM control over two seperate 
 Usage:      To begin,        
 
 *****************************************************************************************/
+#include <stdint.h>
 typedef struct tb6612fng {
     int AIN1;
     int AIN2;
     int PWMA;
-    int AO1;
-    int AO2;
 
-    int BI1;
-    int BI2;
+    int BIN1;
+    int BIN2;
     int PWMB;
-    int BO1; 
-    int BO2;
 } M_ctrl;
-
-void set_duty_a(float f);
-void set_duty_b(float f);
 
 
 typedef enum {
@@ -49,6 +43,18 @@ typedef enum {
     BWD,
     BRK,
     OFF
-} M_state
+} M_state;
 
-void set_mode(
+/*
+* a and b both must contain 3 elements and be of the forms
+  a = {AIN1, AIN2, PWMA}
+  b = {BIN1, BIN2, PWMB}
+*/
+void init_m_ctrl(M_ctrl *m, int a[static 3], int b[static 3]);
+
+void write_a(M_ctrl *m, uint8_t duty, M_state state);
+void write_b(M_ctrl *m, uint8_t duty, M_state state);
+
+void stop(M_ctrl *m);
+void brake(M_ctrl *m);
+#endif
